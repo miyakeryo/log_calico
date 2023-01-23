@@ -1,0 +1,15 @@
+name: example
+description: Example
+publish_to: none
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  log_calico:
+    path: ../../log_calico
+
+flutter:
+  uses-material-design: true
