@@ -23,8 +23,8 @@ class BufferedOutput extends Output {
   final _chunks = <BufferChunk>[];
   final _lock = Lock();
 
-  BufferedOutput({
-    required super.tagPattern,
+  BufferedOutput(
+    super.pattern, {
     required LogStorage logStorage,
     this.flushInterval = 100,
     this.retryLimit = 3,
@@ -122,8 +122,15 @@ class BufferedOutput extends Output {
     }
   }
 
-  String get storageHash =>
-      '${this.runtimeType.hashCode}_${tagPattern.pattern.hashCode}';
+  String get storageHash {
+    return '${this.runtimeType.hashCode}_${(Pattern pattern) {
+      if (pattern is RegExp) {
+        return pattern.pattern.hashCode;
+      } else {
+        return pattern.toString().hashCode;
+      }
+    }(this.pattern)}';
+  }
 
   Future<void> _reloadLogStorage() async {
     final logs = await _logStorage.retrieveLogs(storageHash);

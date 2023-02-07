@@ -1,7 +1,7 @@
 import 'package:log_calico/log_calico.dart';
 
 class ActionFilter extends Filter {
-  ActionFilter({required super.tagPattern});
+  ActionFilter(super.pattern);
 
   @override
   List<Log> transform(Log log) {

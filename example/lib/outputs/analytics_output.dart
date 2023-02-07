@@ -1,8 +1,8 @@
 import 'package:log_calico/log_calico.dart';
 
 class AnalyticsOutput extends BufferedOutput {
-  AnalyticsOutput({
-    required super.tagPattern,
+  AnalyticsOutput(
+    super.pattern, {
     super.flushInterval = 100,
     super.retryLimit = 3,
     super.logCountLimit = 5,

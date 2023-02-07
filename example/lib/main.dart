@@ -10,15 +10,15 @@ import 'outputs/print_output.dart';
 
 final logger = Logger(
   filters: [
-    PageViewFilter(tagPattern: 'page_view'),
-    ActionFilter(tagPattern: 'action'),
+    PageViewFilter('page_view'),
+    ActionFilter('action'),
     NoFilter(),
   ],
   outputs: [
-    MyLogOutput(tagPattern: 'my.**'),
-    AnalyticsOutput(tagPattern: 'ga.**'),
+    MyLogOutput('my.**'),
+    AnalyticsOutput('ga.**'),
     PrintOutput(
-      tagPattern: '**',
+      '**',
       shouldEmit: (log) {
         return !['my', 'ga'].contains(log.tag.split('.').first);
       },

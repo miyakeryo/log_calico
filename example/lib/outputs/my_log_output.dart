@@ -1,8 +1,8 @@
 import 'package:log_calico/log_calico.dart';
 
 class MyLogOutput extends BufferedOutput {
-  MyLogOutput({
-    required super.tagPattern,
+  MyLogOutput(
+    super.pattern, {
     super.flushInterval = 100,
     super.retryLimit = 3,
     super.logCountLimit = 5,

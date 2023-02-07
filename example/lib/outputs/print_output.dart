@@ -1,7 +1,7 @@
 import 'package:log_calico/log_calico.dart';
 
 class PrintOutput extends Output {
-  PrintOutput({required super.tagPattern, super.shouldEmit});
+  PrintOutput(super.pattern, {super.shouldEmit});
 
   @override
   Future<void> emit(Log log) async {

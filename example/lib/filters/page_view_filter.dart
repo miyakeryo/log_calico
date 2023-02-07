@@ -1,7 +1,7 @@
 import 'package:log_calico/log_calico.dart';
 
 class PageViewFilter extends Filter {
-  PageViewFilter({required super.tagPattern});
+  PageViewFilter(super.pattern);
 
   @override
   List<Log> transform(Log log) {
@@ -11,16 +11,16 @@ class PageViewFilter extends Filter {
     } else {
       return [
         log.copyWith(
-          tag: 'ga.pageview',
+          tag: 'ga.page_view',
           payload: {
-            'event_name': 'pageview',
+            'event_name': 'page_view',
             'properties': log.payload,
           },
         ),
         log.copyWith(
-          tag: 'my.pageview',
+          tag: 'my.page_view',
           payload: {
-            'event_name': 'pageview_$name',
+            'event_name': 'page_view_$name',
             'properties': Map.of(log.payload)..remove('name'),
           },
         ),

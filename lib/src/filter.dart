@@ -4,15 +4,23 @@ import 'log.dart';
 import 'tag_pattern.dart';
 
 abstract class Filter {
-  final TagPattern tagPattern;
+  final Pattern pattern;
 
-  Filter({required String tagPattern})
-      : this.tagPattern = TagPattern(tagPattern);
+  Filter(Pattern pattern)
+      : pattern = pattern is String ? TagPattern(pattern) : pattern;
+
+  const Filter.tag(TagPattern tagPattern) : pattern = tagPattern;
 
   List<Log> transform(Log log);
 
   bool where(Log log) {
-    return tagPattern.match(log.tag);
+    return (Pattern pattern) {
+      if (pattern is TagPattern) {
+        return pattern.match(log.tag);
+      } else {
+        return pattern.allMatches(log.tag).isNotEmpty;
+      }
+    }(this.pattern);
   }
 
   StreamTransformer<Log, List<Log>> get streamTransformer {

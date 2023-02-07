@@ -2,14 +2,24 @@ import 'log.dart';
 import 'tag_pattern.dart';
 
 abstract class Output {
-  final TagPattern tagPattern;
+  final Pattern pattern;
   final bool Function(Log)? shouldEmit;
 
-  Output({required String tagPattern, this.shouldEmit})
-      : this.tagPattern = TagPattern(tagPattern);
+  Output(Pattern pattern, {this.shouldEmit})
+      : pattern = pattern is String ? TagPattern(pattern) : pattern;
+
+  const Output.tag(TagPattern tagPattern, {this.shouldEmit})
+      : pattern = tagPattern;
 
   bool where(Log log) {
-    return tagPattern.match(log.tag) && shouldEmit?.call(log) != false;
+    return (Pattern pattern) {
+          if (pattern is TagPattern) {
+            return pattern.match(log.tag);
+          } else {
+            return pattern.allMatches(log.tag).isNotEmpty;
+          }
+        }(this.pattern) &&
+        shouldEmit?.call(log) != false;
   }
 
   void dispose() async {}
