@@ -75,7 +75,7 @@ class BufferedOutput extends Output {
     await _lock.synchronized(() {
       _buffer.add(log);
     });
-    _logStorage.add([log], storageHash);
+    unawaited(_logStorage.add([log], storageHash));
     if (_buffer.length >= logCountLimit) {
       await _flush();
     }
@@ -108,7 +108,7 @@ class BufferedOutput extends Output {
       await _lock.synchronized(() {
         _chunks.remove(chunk);
       });
-      _logStorage.remove(chunk.logs, storageHash);
+      unawaited(_logStorage.remove(chunk.logs, storageHash));
     } else {
       chunk.retryCount++;
       if (chunk.retryCount <= retryLimit) {
