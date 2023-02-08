@@ -7,7 +7,7 @@ import 'output.dart';
 class Logger {
   final _streamController = StreamController<Log>.broadcast();
   final List<Output> _outputs;
-  var globalParams = <String, Object>{};
+  var globalParams = <String, Object?>{};
 
   Logger({
     List<Filter>? filters,
@@ -47,8 +47,8 @@ class Logger {
     });
   }
 
-  void post(Map<String, Object> payload, {String tag = ''}) {
-    final params = Map<String, Object>.from(globalParams);
+  void post(Map<String, Object?> payload, {String tag = ''}) {
+    final params = Map<String, Object?>.from(globalParams);
     params.addAll(payload);
     _streamController.sink.add(
       Log(

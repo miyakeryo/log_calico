@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 
 class Log {
-  final Map<String, Object> payload;
+  final Map<String, Object?> payload;
   final String tag;
   final DateTime loggedAt;
 
@@ -24,7 +24,7 @@ class Log {
   int get hashCode => Object.hash(payload, tag, loggedAt, super.hashCode);
 
   Log copyWith({
-    Map<String, Object>? payload,
+    Map<String, Object?>? payload,
     String? tag,
     DateTime? loggedAt,
   }) {
@@ -49,7 +49,7 @@ class Log {
   /// Throws [TypeError] if the input does not have valid parameters.
   factory Log.fromMap(Map map) {
     return Log(
-      payload: (map['payload'] as Map).cast<String, Object>(),
+      payload: (map['payload'] as Map).cast<String, Object?>(),
       tag: map['tag'] as String,
       loggedAt: DateTime.fromMillisecondsSinceEpoch(map['loggedAt'] as int),
     );
@@ -74,6 +74,8 @@ class Log {
 }
 
 extension LogList on Iterable<Log> {
+  ///
+  /// Throws [FormatException] if the payload can not encode to JSON.
   String get toJsonString {
     return '[${map((log) => log.toJsonString).join(',')}]';
   }
