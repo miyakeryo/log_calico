@@ -105,9 +105,10 @@ void main() {
   });
 
   group('LocalLogStorage#remove', () {
-    test('remove', () async {
+    test('remove all logs', () async {
       final logs = [
         Log(payload: {'foo': 'bar', 'baz': 123}, tag: 'tag1'),
+        Log(payload: {'goo': 'nar', 'naz': 456}, tag: 'tag2'),
       ];
       await storage.add(logs, storageHash);
       await storage.remove(logs, storageHash);
@@ -115,6 +116,20 @@ void main() {
       final contents = await localStorage.getItem(LocalLogStorage.itemName);
       final logs2 = LogList.fromJsonString(contents);
       expect(logs2, isEmpty);
+    });
+
+    test('remove 1 log', () async {
+      final logs = [
+        Log(payload: {'foo': 'bar', 'baz': 123}, tag: 'tag1'),
+        Log(payload: {'goo': 'nar', 'naz': 456}, tag: 'tag2'),
+      ];
+      await storage.add(logs, storageHash);
+      await storage.remove(logs.sublist(0, 1), storageHash);
+
+      final contents = await localStorage.getItem(LocalLogStorage.itemName);
+      final logs2 = LogList.fromJsonString(contents);
+      expect(logs2.length, 1);
+      expect(logs2[0], logs[1]);
     });
   });
 }
