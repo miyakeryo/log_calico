@@ -30,11 +30,13 @@ class BufferedOutput extends Output {
     this.retryLimit = 3,
     this.logCountLimit = 5,
     this.retryMillisecondsDelay = _defaultRetryMillisecondsDelay,
-  }) : this._logStorage = logStorage;
+  }) : this._logStorage = logStorage {
+    _logStorage.prepare();
+  }
 
   @override
   @mustCallSuper
-  void dispose() async {
+  void dispose() {
     _stopTimer();
     _logStorage.dispose();
   }
