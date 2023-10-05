@@ -1,17 +1,8 @@
-import 'dart:math' as math;
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:log_calico/log_calico.dart';
 
-String randomString({int length = 24}) {
-  final rand = math.Random.secure();
-  final charCodes = List.generate(
-    length,
-    (_) => rand.nextInt(0x7E - 0x21) + 0x21,
-  );
-  return String.fromCharCodes(charCodes);
-}
+import 'utils.dart';
 
 void main() {
   late LocalLogStorage storage;

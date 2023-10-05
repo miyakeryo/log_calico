@@ -115,11 +115,13 @@ class BufferedOutput extends Output {
       chunk.retryCount++;
       if (chunk.retryCount <= retryLimit) {
         final delay = retryMillisecondsDelay(chunk.retryCount);
-        unawaited(Future<void>.delayed(Duration(milliseconds: delay), () async {
-          await _lock.synchronized(() async {
-            await _writeChunk(chunk);
-          });
+        unawaited(Future<void>.delayed(Duration(milliseconds: delay), () {
+          _writeChunk(chunk);
         }));
+      } else {
+        await _lock.synchronized(() {
+          _chunks.remove(chunk);
+        });
       }
     }
   }
