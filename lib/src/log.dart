@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 
 class Log {
-  final Map<String, Object?> payload;
+  final Map<String, dynamic> payload;
   final String tag;
   final DateTime loggedAt;
 
@@ -17,14 +17,22 @@ class Log {
   bool operator ==(dynamic other) {
     if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) return false;
-    return other.hashCode == hashCode;
+    return other.payload.toString() == payload.toString() &&
+        other.tag == tag &&
+        other.loggedAt.millisecondsSinceEpoch ==
+            loggedAt.millisecondsSinceEpoch;
   }
 
   @override
-  int get hashCode => Object.hash(payload, tag, loggedAt, super.hashCode);
+  int get hashCode => Object.hash(
+        payload,
+        tag,
+        loggedAt.millisecondsSinceEpoch,
+        super.hashCode,
+      );
 
   Log copyWith({
-    Map<String, Object?>? payload,
+    Map<String, dynamic>? payload,
     String? tag,
     DateTime? loggedAt,
   }) {
@@ -49,7 +57,7 @@ class Log {
   /// Throws [TypeError] if the input does not have valid parameters.
   factory Log.fromMap(Map map) {
     return Log(
-      payload: (map['payload'] as Map).cast<String, Object?>(),
+      payload: map['payload'],
       tag: map['tag'] as String,
       loggedAt: DateTime.fromMillisecondsSinceEpoch(map['loggedAt'] as int),
     );

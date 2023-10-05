@@ -1,4 +1,5 @@
 import 'package:localstorage/localstorage.dart';
+import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
 
 import 'log.dart';
@@ -9,7 +10,8 @@ class LocalLogStorage extends LogStorage {
   final _storedLogs = <Log>[];
   final _lock = Lock();
 
-  Future<LocalStorage> _localStorage(String storageHash) async {
+  @visibleForTesting
+  Future<LocalStorage> localStorage(String storageHash) async {
     final storage = LocalStorage(storageHash);
     await storage.ready;
     return storage;
@@ -17,7 +19,7 @@ class LocalLogStorage extends LogStorage {
 
   Future<List<Log>> retrieveLogs(String storageHash) async {
     final storedLogs = <Log>[];
-    final storage = await _localStorage(storageHash);
+    final storage = await localStorage(storageHash);
     final contents = await storage.getItem(itemName);
     if (contents is String) {
       await _lock.synchronized(() async {
@@ -54,7 +56,7 @@ class LocalLogStorage extends LogStorage {
   }
 
   Future<void> _save(List<Log> logs, String storageHash) async {
-    final storage = await _localStorage(storageHash);
+    final storage = await localStorage(storageHash);
     await storage.setItem(itemName, logs.toJsonString);
   }
 }

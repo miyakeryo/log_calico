@@ -1,3 +1,7 @@
+## 1.3.0
+
+- Fix BufferedOutput
+
 ## 1.2.0
 
 - Support Dart 3

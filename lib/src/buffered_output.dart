@@ -30,11 +30,13 @@ class BufferedOutput extends Output {
     this.retryLimit = 3,
     this.logCountLimit = 5,
     this.retryMillisecondsDelay = _defaultRetryMillisecondsDelay,
-  }) : this._logStorage = logStorage;
+  }) : this._logStorage = logStorage {
+    _logStorage.prepare();
+  }
 
   @override
   @mustCallSuper
-  void dispose() async {
+  void dispose() {
     _stopTimer();
     _logStorage.dispose();
   }
@@ -113,11 +115,13 @@ class BufferedOutput extends Output {
       chunk.retryCount++;
       if (chunk.retryCount <= retryLimit) {
         final delay = retryMillisecondsDelay(chunk.retryCount);
-        unawaited(Future<void>.delayed(Duration(milliseconds: delay), () async {
-          await _lock.synchronized(() async {
-            await _writeChunk(chunk);
-          });
+        unawaited(Future<void>.delayed(Duration(milliseconds: delay), () {
+          _writeChunk(chunk);
         }));
+      } else {
+        await _lock.synchronized(() {
+          _chunks.remove(chunk);
+        });
       }
     }
   }
