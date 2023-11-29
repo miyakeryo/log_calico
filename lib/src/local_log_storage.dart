@@ -9,14 +9,30 @@ class LocalLogStorage extends LogStorage {
   static const itemName = 'logs';
   final _storedLogs = <Log>[];
   final _lock = Lock();
+  final _storageMap = <String, LocalStorage>{};
+
+  @override
+  void dispose() {
+    _storageMap.values.forEach((storage) => storage.dispose());
+  }
 
   @visibleForTesting
   Future<LocalStorage> localStorage(String storageHash) async {
+    if (_storageMap.containsKey(storageHash)) {
+      return _storageMap[storageHash]!;
+    }
     final storage = LocalStorage(storageHash);
-    await storage.ready;
+    try {
+      await storage.ready;
+    } catch (_) {
+      /// If the file is corrupted, delete it.
+      await storage.clear();
+    }
+    _storageMap[storageHash] = storage;
     return storage;
   }
 
+  @override
   Future<List<Log>> retrieveLogs(String storageHash) async {
     final storedLogs = <Log>[];
     final storage = await localStorage(storageHash);
@@ -36,6 +52,7 @@ class LocalLogStorage extends LogStorage {
     return storedLogs;
   }
 
+  @override
   Future<void> add(List<Log> logs, String storageHash) async {
     final storedLogs = <Log>[];
 
@@ -46,6 +63,7 @@ class LocalLogStorage extends LogStorage {
     });
   }
 
+  @override
   Future<void> remove(List<Log> logs, String storageHash) async {
     final storedLogs = <Log>[];
     await _lock.synchronized(() async {
